@@ -17,7 +17,7 @@ class _MyLanguaguageViewState extends State<MyLanguaguageView> {
   LanguageIdentifier languageIdentifier = LanguageIdentifier(confidenceThreshold: 0.7);
   Uint8List? bytesImage;
   late InputImage image;
-  ImageLabeler labeler = ImageLabeler(options: ImageLabelerOptions(confidenceThreshold: 0.6));
+  ImageLabeler labeler = ImageLabeler(options: ImageLabelerOptions(confidenceThreshold: 0.4));
   String resultatString ="";
 
 
@@ -41,12 +41,28 @@ class _MyLanguaguageViewState extends State<MyLanguaguageView> {
 
  processing() async{
    resultatString ="";
+   var labels = await labeler.processImage(image);
+   for (var l in labels){
+     setState(() {
+       resultatString += "\n ${l.label} avec une confiance de ${(l.confidence * 100).toInt()} %";
+     });
+   }
 
 
 
  }
 
   simpleIndentification() async {
+
+   if(controller.text != ""){
+
+       String phrase = await languageIdentifier.identifyLanguage(controller.text);
+       setState(() {
+         texte = phrase;
+       });
+
+
+   }
 
 
   }
