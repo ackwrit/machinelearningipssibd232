@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "827622208006",
+    "project_id": "mlearning-81345",
+    "storage_bucket": "mlearning-81345.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:827622208006:android:891cb079b5022eb1600987",
+        "android_client_info": {
+          "package_name": "com.example.mlearning"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "827622208006-6kkp7c30u8srkoom4e95epsvm53l1mnm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDx1Xz9-9BQO4lix6r-8HN_bPsm-FYQQ9k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "827622208006-6kkp7c30u8srkoom4e95epsvm53l1mnm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
