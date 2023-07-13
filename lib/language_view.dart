@@ -41,14 +41,7 @@ class _MyLanguaguageViewState extends State<MyLanguaguageView> {
 
  processing() async{
    resultatString ="";
-   final labels = await labeler.processImage(image);
-   print(labels.length);
-   for(var  l in labels){
-     setState(() {
-       resultatString += "\n${l.label} avec une confiance de ${(l.confidence *100).toInt()} %";
-     });
 
-   }
 
 
  }
