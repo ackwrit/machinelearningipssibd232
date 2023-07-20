@@ -17,59 +17,73 @@ class _MyLanguaguageViewState extends State<MyLanguaguageView> {
   LanguageIdentifier languageIdentifier = LanguageIdentifier(confidenceThreshold: 0.1);
   OnDeviceTranslator translator = OnDeviceTranslator(sourceLanguage: TranslateLanguage.french, targetLanguage: TranslateLanguage.danish);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   Uint8List? bytesImage;
   late InputImage image;
+  ImageLabeler labeler = ImageLabeler(options: ImageLabelerOptions(confidenceThreshold: 0.5));
+  String resultatString ="";
+
+
+
+  pickImage() async {
+    FilePickerResult? resultat = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        withData: true
+    );
+    if(resultat != null){
+      setState(() {
+        bytesImage = resultat.files.first.bytes;
+        image = InputImage.fromFilePath(resultat.files.first.path!);
+      });
+
+    }
+  }
+
+  processing() async{
+    resultatString ="";
+    List images = await labeler.processImage(image);
+    for(ImageLabel image in images){
+      setState(() {
+        resultatString += "\n${image.label} avec une confiance de ${(image.confidence * 100).toInt()}%";
+      });
+
+    }
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   late ObjectDetector detectedObject;
   ObjectDetectorOptions objectDetectorOptions = ObjectDetectorOptions(
       mode: DetectionMode.single,
       classifyObjects: true,
       multipleObjects: true
   );
-  ImageLabeler labeler = ImageLabeler(options: ImageLabelerOptions(confidenceThreshold: 0.1));
-  String resultatString ="";
 
 
 
 
- pickImage() async {
-   FilePickerResult? resultat = await FilePicker.platform.pickFiles(
-       type: FileType.image,
-       withData: true
-   );
-   if(resultat != null){
-     setState(() {
-       bytesImage = resultat.files.first.bytes;
-       image = InputImage.fromFilePath(resultat.files.first.path!);
-
-
-     });
-
-   }
- }
-
-
- processing() async{
 
 
 
 
- }
+
 
   simpleIndentification() async {
     texte = "";
@@ -128,53 +142,51 @@ class _MyLanguaguageViewState extends State<MyLanguaguageView> {
 
   Widget bodyPage(){
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          ///////////////////////
-          TextField(
-            controller: controller,
-            decoration: const InputDecoration(
-              hintText: "Entrer un texte",
+      child: Container(
+        child: Column(
+          children: [
+            ///////////////////////
+            TextField(
+              controller: controller,
+              decoration: const InputDecoration(
+                hintText: "Entrer un texte",
 
+              ),
             ),
-          ),
-          ElevatedButton(
-              onPressed:simpleIndentification,
-              child: const Text("Identification")
-          ),
+            /*ElevatedButton(
+                onPressed:simpleIndentification,
+                child: const Text("Identification")
+            ),
 
 
-          ElevatedButton(
-              onPressed:mutipleIndentification,
-              child: const Text("Multiple identification")
-          ),
+            ElevatedButton(
+                onPressed:mutipleIndentification,
+                child: const Text("Multiple identification")
+            ),
 
-          ElevatedButton(
-              onPressed:traduction,
-              child: const Text("Traduire")
-          ),
-
-
-          Text(texte),
-          ///////////////////
+            ElevatedButton(
+                onPressed:traduction,
+                child: const Text("Traduire")
+            ),*/
 
 
+            Text(texte),
+            ///////////////////
 
-
-
-
-          ElevatedButton(
-              onPressed: pickImage,
-              child: const Text("Image")
-          ),
-
-          (bytesImage != null)?Image.memory(bytesImage!,height: 350,):Container(),
-          ElevatedButton(
-              onPressed: processing,
-              child: const Text("Determination")
-          ),
-          Text(resultatString)
-        ],
+          //bouton image
+            ElevatedButton(
+                onPressed: pickImage,
+                child: const Text("Image")
+            ),
+            //afficher l'image
+            (bytesImage != null)?Image.memory(bytesImage!,height: 350,):Container(),
+            ElevatedButton(
+                onPressed: processing,
+                child: const Text("Lister infos images")
+            ),
+            Text(resultatString)
+          ],
+        ),
       ),
     );
   }
