@@ -40,13 +40,7 @@ class _MyLanguaguageViewState extends State<MyLanguaguageView> {
 
 
  processing() async{
-   resultatString ="";
-   var labels = await labeler.processImage(image);
-   for (var l in labels){
-     setState(() {
-       resultatString += "\n ${l.label} avec une confiance de ${(l.confidence * 100).toInt()} %";
-     });
-   }
+
 
 
 
@@ -54,15 +48,7 @@ class _MyLanguaguageViewState extends State<MyLanguaguageView> {
 
   simpleIndentification() async {
 
-   if(controller.text != ""){
 
-       String phrase = await languageIdentifier.identifyLanguage(controller.text);
-       setState(() {
-         texte = phrase;
-       });
-
-
-   }
 
 
   }
