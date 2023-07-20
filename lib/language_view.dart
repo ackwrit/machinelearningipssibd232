@@ -14,7 +14,8 @@ class _MyLanguaguageViewState extends State<MyLanguaguageView> {
   //variable
   TextEditingController controller = TextEditingController();
   String texte = "";
-  LanguageIdentifier languageIdentifier = LanguageIdentifier(confidenceThreshold: 0.4);
+  LanguageIdentifier languageIdentifier = LanguageIdentifier(confidenceThreshold: 0.1);
+  OnDeviceTranslator translator = OnDeviceTranslator(sourceLanguage: TranslateLanguage.french, targetLanguage: TranslateLanguage.danish);
 
 
 
@@ -40,7 +41,7 @@ class _MyLanguaguageViewState extends State<MyLanguaguageView> {
       classifyObjects: true,
       multipleObjects: true
   );
-  ImageLabeler labeler = ImageLabeler(options: ImageLabelerOptions(confidenceThreshold: 0.4));
+  ImageLabeler labeler = ImageLabeler(options: ImageLabelerOptions(confidenceThreshold: 0.1));
   String resultatString ="";
 
 
@@ -80,10 +81,34 @@ class _MyLanguaguageViewState extends State<MyLanguaguageView> {
        texte = provisoire;
      });
     }
+ }
 
 
+  mutipleIndentification() async{
+      texte = "";
+     if(controller.text != null && controller.text != ""){
+       String phrase = controller.text;
+       List multiplePhrase = await languageIdentifier.identifyPossibleLanguages(phrase);
+       for(IdentifiedLanguage label in multiplePhrase){
+         setState(() {
+           print(label.languageTag);
+           texte += "\n${label.languageTag} avec une confiance de ${(label.confidence *100).toInt()} %";
+         });
 
+       }
 
+     }
+  }
+
+  traduction() async{
+   texte = "";
+   if(controller.text != null && controller.text != ""){
+      String phrase = controller.text;
+      String provisoire =await translator.translateText(phrase);
+      setState(() {
+        texte = provisoire;
+      });
+    }
   }
 
   @override
@@ -117,6 +142,19 @@ class _MyLanguaguageViewState extends State<MyLanguaguageView> {
               onPressed:simpleIndentification,
               child: const Text("Identification")
           ),
+
+
+          ElevatedButton(
+              onPressed:mutipleIndentification,
+              child: const Text("Multiple identification")
+          ),
+
+          ElevatedButton(
+              onPressed:traduction,
+              child: const Text("Traduire")
+          ),
+
+
           Text(texte),
           ///////////////////
 
