@@ -14,9 +14,32 @@ class _MyLanguaguageViewState extends State<MyLanguaguageView> {
   //variable
   TextEditingController controller = TextEditingController();
   String texte = "";
-  LanguageIdentifier languageIdentifier = LanguageIdentifier(confidenceThreshold: 0.7);
+  LanguageIdentifier languageIdentifier = LanguageIdentifier(confidenceThreshold: 0.4);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   Uint8List? bytesImage;
   late InputImage image;
+  late ObjectDetector detectedObject;
+  ObjectDetectorOptions objectDetectorOptions = ObjectDetectorOptions(
+      mode: DetectionMode.single,
+      classifyObjects: true,
+      multipleObjects: true
+  );
   ImageLabeler labeler = ImageLabeler(options: ImageLabelerOptions(confidenceThreshold: 0.4));
   String resultatString ="";
 
@@ -33,6 +56,7 @@ class _MyLanguaguageViewState extends State<MyLanguaguageView> {
        bytesImage = resultat.files.first.bytes;
        image = InputImage.fromFilePath(resultat.files.first.path!);
 
+
      });
 
    }
@@ -47,10 +71,27 @@ class _MyLanguaguageViewState extends State<MyLanguaguageView> {
  }
 
   simpleIndentification() async {
+    texte = "";
+    if(controller.text != null && controller.text != ""){
+      String phrase = controller.text;
+
+     String provisoire = await languageIdentifier.identifyLanguage(phrase);
+     setState(() {
+       texte = provisoire;
+     });
+    }
 
 
 
 
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    detectedObject = ObjectDetector(options: objectDetectorOptions);
+
+    super.initState();
   }
   @override
   Widget build(BuildContext context) {
@@ -64,6 +105,7 @@ class _MyLanguaguageViewState extends State<MyLanguaguageView> {
     return SingleChildScrollView(
       child: Column(
         children: [
+          ///////////////////////
           TextField(
             controller: controller,
             decoration: const InputDecoration(
@@ -71,10 +113,17 @@ class _MyLanguaguageViewState extends State<MyLanguaguageView> {
 
             ),
           ),
-          ElevatedButton(onPressed:simpleIndentification,
+          ElevatedButton(
+              onPressed:simpleIndentification,
               child: const Text("Identification")
           ),
           Text(texte),
+          ///////////////////
+
+
+
+
+
 
           ElevatedButton(
               onPressed: pickImage,
